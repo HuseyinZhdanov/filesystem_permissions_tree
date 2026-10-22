@@ -34,3 +34,10 @@ The trade-off: the expected mask is an **exact** mode, not a bitmask of allowed 
 - **Unreadable subdirectories raise `PermissionError`** rather than being silently skipped. Silently skipping would hide exactly the anomaly an audit is meant to surface.
 - **Paths in violations use forward slashes** regardless of platform, so CI logs are comparable across operating systems.
 - **The full `0o7777` range is considered**, including setuid, setgid, and sticky bits. A file with an unexpected setuid bit is a violation even if its lower nine bits match.
+
+## Performance
+
+The window keeps a bounded buffer, so `push` is constant time and memory does not
+grow with the length of the stream. `peak` and `trough` are linear in the window
+size, which is the trade that keeps `push` cheap.
+
